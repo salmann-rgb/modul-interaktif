@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perangkat Keras Komputer</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0d1117 0%,#1a1040 40%,#0d2137 100%);min-height:100vh;color:#fff;}
+#progress-bar{position:fixed;top:0;left:0;height:3px;z-index:9999;background:linear-gradient(90deg,#a855f7,#06b6d4);width:0%;transition:width 0.15s;}
+.sidebar{width:240px;height:100vh;background:linear-gradient(180deg,rgba(168,85,247,0.15) 0%,rgba(6,182,212,0.1) 100%);backdrop-filter:blur(20px);border-right:1px solid rgba(168,85,247,0.2);padding:4rem 1rem 1.5rem 1rem;position:fixed;left:0;top:0;z-index:100;transition:transform 0.3s;display:flex;flex-direction:column;overflow-y:auto;}
+.sidebar.hidden{transform:translateX(-100%);}
+.sidebar-logo{margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.08);}
+.sidebar-logo .title{color:#a855f7;font-size:1.05rem;font-weight:700;}
+.sidebar-logo .sub{color:rgba(255,255,255,0.4);font-size:0.72rem;margin-top:3px;}
+.nav-section{font-size:0.68rem;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin:1rem 0 0.4rem 0.5rem;}
+.sidebar a{display:flex;align-items:center;gap:0.6rem;color:rgba(255,255,255,0.6);text-decoration:none;padding:0.55rem 0.8rem;border-radius:10px;font-size:0.88rem;transition:all 0.2s;margin-bottom:2px;}
+.sidebar a:hover{background:rgba(168,85,247,0.15);color:#a855f7;}
+.sidebar a.active{background:linear-gradient(90deg,rgba(168,85,247,0.25),rgba(6,182,212,0.15));color:#a855f7;border-left:2px solid #a855f7;}
+.sidebar a.cyan-nav:hover{color:#06b6d4;background:rgba(6,182,212,0.15);}
+.sidebar a.cyan-nav.active{color:#06b6d4;border-left-color:#06b6d4;background:linear-gradient(90deg,rgba(6,182,212,0.2),rgba(168,85,247,0.1));}
+.hamburger{position:fixed;top:1rem;left:1rem;z-index:200;width:40px;height:40px;border-radius:10px;border:1px solid rgba(168,85,247,0.4);background:rgba(168,85,247,0.15);backdrop-filter:blur(10px);color:#a855f7;cursor:pointer;font-size:1.2rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.hamburger:hover{background:rgba(168,85,247,0.3);}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:90;}
+.overlay.show{display:block;}
+.main{margin-left:240px;padding:2rem;transition:margin 0.3s;}
+.main.full{margin-left:0;padding:2rem 2rem 2rem 5rem;}
+.glass-card{background:rgba(255,255,255,0.04);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:1.8rem;margin-bottom:1.5rem;width:100%;}
+.glass-card.purple-border{border-color:rgba(168,85,247,0.25);}
+.glass-card.cyan-border{border-color:rgba(6,182,212,0.25);}
+.section-label{font-size:0.72rem;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:0.5rem;font-weight:600;}
+.purple-label{color:#a855f7;}.cyan-label{color:#06b6d4;}
+.section-title{font-size:1.4rem;font-weight:700;margin-bottom:1rem;}
+.purple-title{color:#a855f7;}.cyan-title{color:#06b6d4;}
+.hero-desc{color:rgba(255,255,255,0.7);line-height:1.8;font-size:0.95rem;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.2rem;}
+.info-box{padding:1rem;border-radius:12px;font-size:0.85rem;line-height:1.6;color:rgba(255,255,255,0.75);}
+.info-box.purple{background:rgba(168,85,247,0.08);border:1px solid rgba(168,85,247,0.2);}
+.info-box.cyan{background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.2);}
+.info-box h4{margin-bottom:0.4rem;font-size:0.88rem;}
+.info-box.purple h4{color:#a855f7;}.info-box.cyan h4{color:#06b6d4;}
+.sub-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:1.2rem;margin-bottom:1rem;}
+.sub-card h3{font-size:0.95rem;margin-bottom:0.6rem;color:#06b6d4;}
+.sub-content p{color:rgba(255,255,255,0.7);font-size:0.88rem;line-height:1.75;margin-bottom:0.8rem;}
+canvas{width:100%;border-radius:12px;display:block;background:rgba(0,0,0,0.2);}
+.timer{display:inline-flex;align-items:center;gap:0.5rem;background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);color:#06b6d4;padding:0.35rem 1rem;border-radius:50px;font-size:0.85rem;margin-bottom:1.2rem;}
+.quiz-nav{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.2rem;}
+.q-dot{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.05);color:rgba(255,255,255,0.5);font-size:0.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.q-dot.done{background:rgba(168,85,247,0.3);border-color:#a855f7;color:#a855f7;}
+.q-dot.current{background:rgba(6,182,212,0.3);border-color:#06b6d4;color:#06b6d4;}
+.opt{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:0.7rem 1rem;margin-bottom:0.5rem;cursor:pointer;color:rgba(255,255,255,0.8);font-size:0.88rem;transition:all 0.2s;}
+.opt:hover{background:rgba(168,85,247,0.15);border-color:rgba(168,85,247,0.4);}
+.opt.correct{background:rgba(34,197,94,0.15);border-color:#22c55e;color:#86efac;pointer-events:none;}
+.opt.wrong{background:rgba(239,68,68,0.15);border-color:#ef4444;color:#fca5a5;pointer-events:none;}
+.opt.disabled{pointer-events:none;opacity:0.5;}
+.feedback{padding:0.6rem 1rem;border-radius:8px;font-size:0.83rem;margin-top:0.5rem;display:none;}
+.feedback.ok{background:rgba(34,197,94,0.1);color:#86efac;border:1px solid rgba(34,197,94,0.2);}
+.feedback.no{background:rgba(239,68,68,0.1);color:#fca5a5;border:1px solid rgba(239,68,68,0.2);}
+.quiz-q{color:#fff;font-size:0.92rem;font-weight:500;margin-bottom:0.8rem;}
+.result-box{text-align:center;padding:1.5rem;}
+.result-score{font-size:3rem;font-weight:700;background:linear-gradient(90deg,#a855f7,#06b6d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.result-grade{font-size:1.2rem;color:rgba(255,255,255,0.7);margin-top:0.3rem;}
+.glos-item{padding:0.8rem 0;border-bottom:1px solid rgba(255,255,255,0.06);}
+.glos-item:last-child{border-bottom:none;}
+.glos-term{color:#a855f7;font-weight:600;font-size:0.9rem;}
+.glos-def{color:rgba(255,255,255,0.65);font-size:0.85rem;margin-top:0.2rem;line-height:1.6;}
+#back-top{position:fixed;bottom:1.5rem;right:1.5rem;width:40px;height:40px;border-radius:50%;border:1px solid rgba(168,85,247,0.4);background:rgba(168,85,247,0.15);backdrop-filter:blur(10px);color:#a855f7;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+#back-top:hover{background:rgba(168,85,247,0.3);}
+</style>
+</head>
+<body>
+<div id="progress-bar"></div>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+<button class="hamburger" onclick="toggleSidebar()">☰</button>
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="title">📚 Perangkat Keras Komputer</div>
+    <div class="sub">X · Teknologi Informasi</div>
+  </div>
+  <div class="nav-section">Navigasi</div>
+  <a href="#beranda">🏠 Beranda</a>
+  <a href="#materi">📖 Materi</a>
+  <a href="#animasi" class="cyan-nav">✨ Animasi</a>
+  <a href="#quiz" class="cyan-nav">❓ Quiz</a>
+  <a href="#glosarium">📝 Glosarium</a>
+</nav>
+<div class="main" id="main">
+  <section id="beranda" class="glass-card purple-border">
+    <div class="section-label purple-label">Modul Interaktif</div>
+    <div class="section-title purple-title">Perangkat Keras Komputer</div>
+    <p class="hero-desc">Memahami dasar-dasar perangkat keras komputer</p>
+    <div class="info-grid">
+      <div class="info-box purple"><h4>🎯 Tujuan Pembelajaran</h4>Memahami dasar-dasar perangkat keras komputer</div>
+      <div class="info-box cyan"><h4>📋 Kompetensi Dasar</h4>Mengidentifikasi komponen perangkat keras komputer</div>
+    </div>
+  </section>
+  <section id="materi" class="glass-card purple-border">
+    <div class="section-label purple-label">Belajar</div>
+    <div class="section-title purple-title">Materi</div>
+    
+  <div class="sub-card">
+    <h3>Pengenalan Perangkat Keras</h3>
+    <div class="sub-content"><p>Perangkat keras komputer adalah komponen fisik yang membentuk sistem komputer. Ini termasuk CPU, RAM, hard disk, dan lain-lain.</p><p>Perangkat keras komputer memiliki peran penting dalam menjalankan sistem operasi dan aplikasi.</p></div>
+  </div>
+
+  <div class="sub-card">
+    <h3>Komponen Perangkat Keras</h3>
+    <div class="sub-content"><p>Komponen perangkat keras komputer meliputi CPU, RAM, hard disk, motherboard, dan power supply. Masing-masing komponen memiliki fungsi yang berbeda-beda.</p><p>CPU berfungsi sebagai otak komputer, RAM berfungsi sebagai memori temporer, hard disk berfungsi sebagai penyimpanan data, dan lain-lain.</p></div>
+  </div>
+
+  <div class="sub-card">
+    <h3>Fungsi Perangkat Keras</h3>
+    <div class="sub-content"><p>Perangkat keras komputer memiliki beberapa fungsi, yaitu mengolah data, menyimpan data, dan menghubungkan dengan perangkat lain. Perangkat keras komputer juga dapat dibagi menjadi beberapa kategori, seperti perangkat input, perangkat output, dan perangkat penyimpanan.</p><p>Perangkat keras komputer yang baik dapat meningkatkan kinerja komputer dan membuat pekerjaan lebih efisien.</p></div>
+  </div>
+
+  </section>
+  <section id="animasi" class="glass-card cyan-border">
+    <div class="section-label cyan-label">Visual</div>
+    <div class="section-title cyan-title">Animasi Interaktif</div>
+    <p style="color:rgba(255,255,255,0.5);font-size:0.83rem;margin-bottom:1rem">Animasi tentang bagian-bagian perangkat keras komputer</p>
+    <canvas id="c" height="200"></canvas>
+  </section>
+  <section id="quiz" class="glass-card cyan-border">
+    <div class="section-label cyan-label">Evaluasi</div>
+    <div class="section-title cyan-title">Quiz Interaktif</div>
+    <div class="timer">⏱ <span id="td">10:00</span></div>
+    <div class="quiz-nav" id="qnav"></div>
+    <div id="qbox"></div>
+    <div id="result-box" style="display:none" class="result-box">
+      <div class="result-score" id="rscore"></div>
+      <div class="result-grade" id="rgrade"></div>
+    </div>
+  </section>
+  <section id="glosarium" class="glass-card purple-border">
+    <div class="section-label purple-label">Referensi</div>
+    <div class="section-title purple-title">Glosarium</div>
+    
+  <div class="glos-item">
+    <div class="glos-term">CPU</div>
+    <div class="glos-def">Central Processing Unit, yaitu komponen yang mengolah data dalam komputer</div>
+  </div>
+
+  <div class="glos-item">
+    <div class="glos-term">RAM</div>
+    <div class="glos-def">Random Access Memory, yaitu memori temporer yang menyimpan data sementara dalam komputer</div>
+  </div>
+
+  <div class="glos-item">
+    <div class="glos-term">Hard Disk</div>
+    <div class="glos-def">Perangkat penyimpanan data permanen dalam komputer</div>
+  </div>
+
+  <div class="glos-item">
+    <div class="glos-term">Motherboard</div>
+    <div class="glos-def">Papan sirkuit yang menghubungkan semua komponen perangkat keras dalam komputer</div>
+  </div>
+
+  <div class="glos-item">
+    <div class="glos-term">Power Supply</div>
+    <div class="glos-def">Komponen yang mengirimkan daya listrik ke semua komponen perangkat keras dalam komputer</div>
+  </div>
+
+  </section>
+</div>
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>
+let sidebarOpen=true;
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const mn=document.getElementById('main');
+  const ov=document.getElementById('overlay');
+  sidebarOpen=!sidebarOpen;
+  if(sidebarOpen){sb.classList.remove('hidden');mn.classList.remove('full');ov.classList.remove('show');}
+  else{sb.classList.add('hidden');mn.classList.add('full');ov.classList.add('show');}
+}
+window.addEventListener('scroll',()=>{
+  const p=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  document.getElementById('progress-bar').style.width=p+'%';
+  document.querySelectorAll('.sidebar a').forEach(a=>{
+    const s=document.querySelector(a.getAttribute('href'));
+    if(s){const r=s.getBoundingClientRect();if(r.top<=120&&r.bottom>=120){a.classList.add('active');}else{a.classList.remove('active');}}
+  });
+});
+const canvas=document.getElementById('c');
+const ctx=canvas.getContext('2d');
+canvas.width=canvas.offsetWidth||800;canvas.height=200;
+const ptypes=[{l:'CO₂',c:'#a855f7'},{l:'H₂O',c:'#06b6d4'},{l:'O₂',c:'#22c55e'},{l:'ATP',c:'#f59e0b'}];
+const pts=[];
+for(let i=0;i<30;i++){const t=ptypes[Math.floor(Math.random()*4)];pts.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:5+Math.random()*6,vx:(Math.random()-.5)*1.5,vy:(Math.random()-.5)*1.5,c:t.c,l:t.l});}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.x<p.r||p.x>canvas.width-p.r)p.vx*=-1;if(p.y<p.r||p.y>canvas.height-p.r)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=p.c+'33';ctx.fill();ctx.strokeStyle=p.c;ctx.lineWidth=1.5;ctx.stroke();ctx.fillStyle='#fff';ctx.font='8px sans-serif';ctx.textAlign='center';ctx.fillText(p.l,p.x,p.y+3);});requestAnimationFrame(draw);}
+draw();
+const qs=[{"soal":"Apa fungsi CPU?","opsi":["Mengolah data","Menghubungkan perangkat","Menyimpan data","Mengontrol perangkat"],"jawaban":0,"feedback":["Benar, CPU berfungsi mengolah data","Salah, CPU tidak berfungsi menghubungkan perangkat","Salah, CPU tidak berfungsi menyimpan data","Salah, CPU tidak berfungsi mengontrol perangkat"]},{"soal":"Apa fungsi RAM?","opsi":["Mengolah data","Menghubungkan perangkat","Menyimpan data sementara","Mengontrol perangkat"],"jawaban":2,"feedback":["Salah, RAM tidak berfungsi mengolah data","Salah, RAM tidak berfungsi menghubungkan perangkat","Benar, RAM berfungsi menyimpan data sementara","Salah, RAM tidak berfungsi mengontrol perangkat"]},{"soal":"Apa fungsi hard disk?","opsi":["Mengolah data","Menghubungkan perangkat","Menyimpan data permanen","Mengontrol perangkat"],"jawaban":2,"feedback":["Salah, hard disk tidak berfungsi mengolah data","Salah, hard disk tidak berfungsi menghubungkan perangkat","Benar, hard disk berfungsi menyimpan data permanen","Salah, hard disk tidak berfungsi mengontrol perangkat"]},{"soal":"Apa fungsi motherboard?","opsi":["Mengolah data","Menghubungkan perangkat","Menyimpan data","Mengontrol perangkat"],"jawaban":1,"feedback":["Salah, motherboard tidak berfungsi mengolah data","Benar, motherboard berfungsi menghubungkan perangkat","Salah, motherboard tidak berfungsi menyimpan data","Salah, motherboard tidak berfungsi mengontrol perangkat"]},{"soal":"Apa fungsi power supply?","opsi":["Mengolah data","Menghubungkan perangkat","Menyimpan data","Mengirimkan daya listrik"],"jawaban":3,"feedback":["Salah, power supply tidak berfungsi mengolah data","Salah, power supply tidak berfungsi menghubungkan perangkat","Salah, power supply tidak berfungsi menyimpan data","Benar, power supply berfungsi mengirimkan daya listrik"]},{"soal":"Apa istilah untuk kapasitas penyimpanan data?","opsi":["Byte","Kilobyte","Gigabyte","Terabyte"],"jawaban":0,"feedback":["Benar, byte adalah satuan dasar penyimpanan data","Salah, kilobyte adalah satuan penyimpanan data yang lebih besar dari byte","Salah, gigabyte adalah satuan penyimpanan data yang lebih besar dari kilobyte","Salah, terabyte adalah satuan penyimpanan data yang lebih besar dari gigabyte"]}];
+let cur=0,score=0,done=[];
+const qnav=document.getElementById('qnav');
+const qbox=document.getElementById('qbox');
+function renderNav(){qnav.innerHTML='';qs.forEach((_,i)=>{const d=document.createElement('div');d.className='q-dot'+(done.includes(i)?' done':i===cur?' current':'');d.textContent=i+1;qnav.appendChild(d);});}
+function renderQ(){
+  if(done.length===qs.length){qbox.style.display='none';const rb=document.getElementById('result-box');rb.style.display='block';const pct=score/qs.length;const grade=pct>=0.9?'A':pct>=0.8?'B':pct>=0.6?'C':'D';document.getElementById('rscore').textContent=score+'/'+qs.length;document.getElementById('rgrade').textContent='Nilai: '+grade+' — '+(pct>=0.8?'Luar biasa! 🎉':pct>=0.6?'Bagus, terus belajar! 👍':'Pelajari lagi materinya ya! 📖');return;}
+  while(done.includes(cur))cur=(cur+1)%qs.length;
+  renderNav();
+  const q=qs[cur];
+  qbox.innerHTML='<div class="quiz-q">'+q.soal+'</div>'+q.opsi.map((o,i)=>'<div class="opt" onclick="pick(this,'+i+')">'+String.fromCharCode(65+i)+'. '+o+'</div>').join('')+'<div class="feedback" id="fb"></div>';
+}
+window.pick=function(el,i){const q=qs[cur];qbox.querySelectorAll('.opt').forEach(o=>o.classList.add('disabled'));const fb=document.getElementById('fb');if(i===q.jawaban){el.classList.add('correct');fb.className='feedback ok';score++;}else{el.classList.add('wrong');qbox.querySelectorAll('.opt')[q.jawaban].classList.add('correct');fb.className='feedback no';}fb.textContent=q.feedback[i];fb.style.display='block';done.push(cur);setTimeout(()=>{cur=(cur+1)%qs.length;renderQ();renderNav();},1800);};
+renderNav();renderQ();
+let t=600;const td=document.getElementById('td');const ti=setInterval(()=>{t--;const m=Math.floor(t/60),s=t%60;td.textContent=m+':'+(s<10?'0':'')+s;if(t<=0)clearInterval(ti);},1000);
+</script>
+</body>
+</html>
